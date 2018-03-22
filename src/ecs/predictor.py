@@ -153,9 +153,15 @@ def predict_vm(ecs_lines, input_lines):
         first_dict = last_mem_dict
 
     # qiu yu ce de tian shu
-    last_day_need = 7
+    last_day_need = 11.6
+
+
+
+
+
+
     for key in result_dict:
-        result_dict[key] *= 7
+        result_dict[key] *= last_day_need
         result_dict[key] = int(result_dict[key]) + 1
     flavor_need_dict = {}
 
