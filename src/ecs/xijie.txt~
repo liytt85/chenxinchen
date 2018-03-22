@@ -1,0 +1,22 @@
+train_day_len 训练数据总天数 int
+result_dict 每一种虚拟机在训练数据中的总需求/平均需求 
+flavor_dict 训练数据中每一天每一种虚拟机需求数量
+last_pc 物理服务器类型参数 list
+flavor_need 服务器需求量 
+time_need 预测的时间，未分割
+caple_class 预测的资源类型 str
+flavor_num 需要预测的虚拟机总数 int
+last_flavor 需要预测的虚拟机名称
+last_flavor_cpu 需要预测的虚拟机对应的cpu数量
+last_flavor_mem 需要预测的虚拟机对应的内存数量
+last_time_need 需要预测的时间，已分割
+flavor_result 存放预测的虚拟机在服务器中的分配，作为result的一部分
+flavor_need_dict 最后预测出来的虚拟机集合
+
+------
+tar -zcvf./liyueteng.tar.gz src/ecs/*.py 
+打包命令，在huawei文件夹目录下执行
+python ecs.py ./TrainData_2015.1.1_2015.2.19.txt.txt ./input_5flavors_cpu_7days.txt.txt ./output.txt
+运行命令，在/huawei/src/ecs 下执行
+
+实验 15个虚拟机会让服务器耗尽
