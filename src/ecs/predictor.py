@@ -217,7 +217,7 @@ def predict_vm(ecs_lines, input_lines):
                     second_left = last_second
                     break
             continue
-        for i in range(2):
+        for i in range(6):
             
             bac_name = first_dict[end_num][0]
             while (flavor_need_dict[bac_name] == 0 and end_num < start_num):
