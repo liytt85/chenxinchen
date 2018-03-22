@@ -136,10 +136,10 @@ def predict_vm(ecs_lines, input_lines):
     for i in range(int(flavor_num)):
         cpu_dict[last_flavor[i]] = last_flavor_cpu[i]
         mem_dict[last_flavor[i]] = last_flavor_mem[i]
-    print cpu_dict, mem_dict
+    #print cpu_dict, mem_dict
     last_cpu_dict = sorted(cpu_dict.items(), key=lambda item: item[1])
     last_mem_dict = sorted(mem_dict.items(), key=lambda item: item[1])
-    print last_cpu_dict, last_mem_dict
+    #print last_cpu_dict, last_mem_dict
 
     if (caple_class == 'cpu'):
         last_first = last_pc[0]
@@ -153,20 +153,27 @@ def predict_vm(ecs_lines, input_lines):
         first_dict = last_mem_dict
 
     # qiu yu ce de tian shu
+    last_day_need = 7
+    for key in result_dict:
+        result_dict[key] *= 7
+        result_dict[key] = int(result_dict[key]) + 1
     flavor_need_dict = {}
+
+    all_flavor_num = 0
     for items in last_flavor:
-        flavor_need_dict[items] = 1
-    print flavor_need_dict
+        flavor_need_dict[items] = result_dict[items]
+        all_flavor_num += result_dict[items]
+    #print flavor_need_dict
     start_num = int(flavor_num) - 1
     end_num = 0
     flavor_result = []
     flavor_result.append('1')
     first_left = last_first
     second_left = last_second
-    print first_dict[-1][0]
+    #print first_dict[-1][0]
     while (end_num < start_num):
 
-        print start_num
+        
         pre_name = first_dict[start_num][0]
         while (flavor_need_dict[pre_name] == 0 and end_num < start_num):
             start_num -= 1
@@ -200,9 +207,12 @@ def predict_vm(ecs_lines, input_lines):
                     tt = flavor_result[-1].split(" ")
                     ttt = int(tt[0]) + 1
                     flavor_result.append(str(ttt))
+                    first_left = last_first
+                    second_left = last_second
                     break
             continue
         for i in range(2):
+            
             bac_name = first_dict[end_num][0]
             while (flavor_need_dict[bac_name] == 0 and end_num < start_num):
                 end_num += 1
@@ -221,12 +231,11 @@ def predict_vm(ecs_lines, input_lines):
                 tt = flavor_result[-1].split(" ")
                 ttt = int(tt[0]) + 1
                 flavor_result.append(str(ttt))
+                first_left = last_first
+                second_left = last_second
                 break
 
-    tt = flavor_result[-1].split(" ")
-    ttt = int(tt[0]) + 1
-    ttt = str(ttt)
-    print type(ttt)
+    
     if (end_num == start_num):
         last_name = first_dict[start_num][0]
         while (flavor_need_dict[last_name] != 0):
@@ -242,11 +251,13 @@ def predict_vm(ecs_lines, input_lines):
                 tt = flavor_result[-1].split(" ")
                 ttt = int(tt[0]) + 1
                 flavor_result.append(str(ttt))
+                first_left = last_first
+                second_left = last_second
                 # zuo yi ge you xi
-    num1 = len(last_flavor)
-    result.append(1 * num1)
-    for items in last_flavor:
-        result.append(items + ' ' + '1')
+    
+    result.append(all_flavor_num)
+    for key in flavor_need_dict:
+        result.append(key + ' ' + str(result_dict[key]))
     result.append('\r')
     num1 = len(flavor_result)
     result.append(num1)
