@@ -194,7 +194,7 @@ def predict_vm(ecs_lines, input_lines):
                     flavor_result[-1] = flavor_result[-1] + \
                         " " + pred_name + " " + "1"
                     first_left -= pred_first_need
-                    second_left -= pred_second_need
+                    second_left -= pred_second_need1
                     flavor_need_dict[pred_name] -= 1
                 else:
                     tt = flavor_result[-1].split(" ")
