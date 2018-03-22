@@ -16,7 +16,10 @@ flavor_need_dict 最后预测出来的虚拟机集合
 ------
 tar -zcvf./liyueteng.tar.gz src/ecs/*.py 
 打包命令，在huawei文件夹目录下执行
-python ecs.py ./TrainData_2015.1.1_2015.2.19.txt.txt ./input_5flavors_cpu_7days.txt.txt ./output.txt
+python ecs.py ./TrainData_2015.1.1_2015.2.19.txt ./input_5flavors_cpu_7days.txt ./output.txt
+
 运行命令，在/huawei/src/ecs 下执行
 
 实验 15个虚拟机会让服务器耗尽
+
+记录：现在出现的情况是只要需要重新开启服务器就会出现死循环
