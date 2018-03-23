@@ -9,17 +9,35 @@ def predict_vm(ecs_lines, input_lines):
         print 'input file information is none'
         return result
     day_num = 0
+    day_eft = -1
     result_dict = {}
     flavor_dict = {}
+    
+
+
+    time_call_dict = {}
+    day_call = 0
     for item in ecs_lines:
-        day_num += 1
+        values = item.split("\t")
+        #uuid = values[0]
+        createTime_1 = values[2]
+        createTime_s_1 = createTime_1.split(' ')
+        if (time_call_dict.has_key(createTime_s_1[0])):
+            pass
+        else:
+            day_call += 1
+            time_call_dict[createTime_s_1[0]] = 0
+    print day_call
+
+    for item in ecs_lines:
+        
         values = item.split("\t")
         uuid = values[0]
         flavorName = values[1]
         if result_dict.has_key(flavorName):
-            result_dict[flavorName] += 1
+            result_dict[flavorName] += 1 * day_eft
         else:
-            result_dict[flavorName] = 1
+            result_dict[flavorName] = 1 * day_eft
         createTime = values[2]
         createTime_s = createTime.split(' ')
         if (flavor_dict.has_key(createTime_s[0])):
@@ -28,6 +46,9 @@ def predict_vm(ecs_lines, input_lines):
             else:
                 flavor_dict[createTime_s[0]][flavorName] = 1
         else:
+            day_num += 1
+            if (day_num > 21):
+                day_eft = 3
             flavor_dict[createTime_s[0]] = {}
     print result_dict
 
@@ -35,9 +56,10 @@ def predict_vm(ecs_lines, input_lines):
 
     add_num = 0
     for items in result_dict:
-        if (result_dict[items] > train_day_len / 2):
-            add_num = 1
-        result_dict[items] = float(result_dict[items]) / train_day_len
+        if (result_dict[items] < 0):
+            result_dict[items] = 0
+        
+        result_dict[items] = (float(result_dict[items])) / train_day_len
 
     # print result_dict
     '''for index, item in input_lines:
@@ -154,7 +176,25 @@ def predict_vm(ecs_lines, input_lines):
 
     # qiu yu ce de tian shu
     last_day_need = 11.6
-
+    #last_time_need = [2013, 12,12,2014,1,23]
+    year_gap = last_time_need[3] - last_time_need[0]
+    month_gap = last_time_need[4] - last_time_need[1]
+    day_gap = last_time_need[5] - last_time_need[2]
+    if (year_gap == 1):
+        last_day_need = 31 - last_time_need[2] + 1 + last_time_need[5]
+    elif (month_gap == 0):
+        last_day_need = day_gap + 1
+    else:
+        if (last_time_need[1] == 2):
+            if (last_time_need[0] == 2016 or last_time_need[0] == 2012):
+                last_day_need = 29 - last_time_need[2] + 1 + last_time_need[5]
+            else:
+                last_day_need = 28 - last_time_need[2] + 1 + last_time_need[5]
+        elif (last_time_need[1] == 2 or last_time_need[1] ==4 or last_time_need[1] == 6 or last_time_need[1] == 9 or last_time_need[1] == 11):
+            last_day_need = 30 - last_time_need[2] + 1 + last_time_need[5]
+        else:
+            last_day_need = 31 - last_time_need[2] + 1 + last_time_need[5]
+    print last_day_need
 
 
 
@@ -162,7 +202,7 @@ def predict_vm(ecs_lines, input_lines):
 
     for key in result_dict:
         result_dict[key] *= last_day_need
-        result_dict[key] = int(result_dict[key]) + 1
+        result_dict[key] = int(result_dict[key]) + 0
     flavor_need_dict = {}
 
     all_flavor_num = 0
