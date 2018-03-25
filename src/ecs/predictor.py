@@ -1,3 +1,4 @@
+from BFD import Bfd
 
 def predict_vm(ecs_lines, input_lines):
     # Do your work from here#
@@ -9,7 +10,8 @@ def predict_vm(ecs_lines, input_lines):
         print 'input file information is none'
         return result
     day_num = 0
-    day_eft = -1
+    arf = 0.505
+    day_eft = -2 * arf
     result_dict = {}
     flavor_dict = {}
     
@@ -17,6 +19,7 @@ def predict_vm(ecs_lines, input_lines):
 
     time_call_dict = {}
     day_call = 0
+    # ji suan zong gong tian shu
     for item in ecs_lines:
         values = item.split("\t")
         #uuid = values[0]
@@ -28,18 +31,23 @@ def predict_vm(ecs_lines, input_lines):
             day_call += 1
             time_call_dict[createTime_s_1[0]] = 0
     print day_call
-
+    add_num = 0
     for item in ecs_lines:
         
         values = item.split("\t")
+        createTime = values[2]
+        createTime_s = createTime.split(' ')
+        if (createTime_s[0] == '2012-01-22' or createTime_s[0] == '2013-02-09' or createTime_s[0] == '2014-01-30' or createTime_s[0] == '2015-02-18' or createTime_s[0] == '2016-02-07' or createTime_s[0] == '2017-01-27'):
+            add_num = -1
+            continue
+
         uuid = values[0]
         flavorName = values[1]
         if result_dict.has_key(flavorName):
             result_dict[flavorName] += 1 * day_eft
         else:
             result_dict[flavorName] = 1 * day_eft
-        createTime = values[2]
-        createTime_s = createTime.split(' ')
+        
         if (flavor_dict.has_key(createTime_s[0])):
             if (flavor_dict[createTime_s[0]].has_key(flavorName)):
                 flavor_dict[createTime_s[0]][flavorName] += 1
@@ -48,7 +56,7 @@ def predict_vm(ecs_lines, input_lines):
         else:
             day_num += 1
             if (day_num > 21):
-                day_eft = 3
+                day_eft = 2 + 2 * arf
             flavor_dict[createTime_s[0]] = {}
     print result_dict
 
@@ -199,24 +207,38 @@ def predict_vm(ecs_lines, input_lines):
 
 
 
-
+    
     for key in result_dict:
         result_dict[key] *= last_day_need
+        
         result_dict[key] = int(result_dict[key]) + 0
     flavor_need_dict = {}
-
+    
     all_flavor_num = 0
     for items in last_flavor:
         flavor_need_dict[items] = result_dict[items]
         all_flavor_num += result_dict[items]
-    #print flavor_need_dict
+
+
+    #new way
+
+
+    str_flavor_need_dict = str(flavor_need_dict)
+    new_flavor_result = Bfd(str_flavor_need_dict, flavor_num, last_first, last_second, first_dict, second_dict)
+
+
+
+
+
+
+   #---------------------------
     start_num = int(flavor_num) - 1
     end_num = 0
     flavor_result = []
     flavor_result.append('1')
     first_left = last_first
     second_left = last_second
-    #print first_dict[-1][0]
+    
     while (end_num < start_num):
 
         
@@ -299,14 +321,22 @@ def predict_vm(ecs_lines, input_lines):
                 flavor_result.append(str(ttt))
                 first_left = last_first
                 second_left = last_second
-                # zuo yi ge you xi
+                # zuo yi ge you xi'''
     
     result.append(all_flavor_num)
     for key in flavor_need_dict:
         result.append(key + ' ' + str(result_dict[key]))
     result.append('\r')
-    num1 = len(flavor_result)
-    result.append(num1)
+    num1 = len(new_flavor_result)
+    num2 = len(flavor_result)
+    if (num1 <= num2):
+        result.append(num1)
+        result = result + new_flavor_result
+    else:
+        result.append(num2)
+        result = result + flavor_result
     
-    result = result + flavor_result
+    
+    #ce shi ke gai jin lv
+    
     return result
